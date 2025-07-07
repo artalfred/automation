@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Papa from "papaparse";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function DeleteLeads() {
   const [csvData, setCsvData] = useState([]);
@@ -65,12 +66,12 @@ export default function DeleteLeads() {
 
   return (
     <div className="min-h-screen p-10 font-sans">
-      <a href="/">
+      <Link href="/">
         <div className="flex items-center gap-4">
           <h1 className="text-5xl">Automation</h1>
           <h6 className="text-l mt-6">By Art Alfred</h6>
         </div>
-      </a>
+      </Link>
 
       <input
         type="file"

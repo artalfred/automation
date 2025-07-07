@@ -1,6 +1,7 @@
 "use client"
 import Image from "next/image";
 import DeleteLeads from "./DeleteLeads/page";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -11,10 +12,10 @@ export default function Home() {
         <h1 className="text-5xl">Automation</h1>
         <h6 className="text-l mt-6">By Art Alfred</h6>
 </div>
- <a href="/DeleteLeads" className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto">
+ <Link href="/DeleteLeads" className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto">
           
           Start Cleaning
-        </a>
+        </Link>
       </main>
       <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
         © Copyright 2025 Art Alfred - All Right Reserved
