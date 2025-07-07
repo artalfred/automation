@@ -10,10 +10,14 @@ export default function DeleteLeads() {
   const [cleanedData, setCleanedData] = useState([]);
   const [progress, setProgress] = useState(0);
   const [isCleaning, setIsCleaning] = useState(false);
+  const [originalFileName, setOriginalFileName] = useState("");
+
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
+
+    setOriginalFileName(file.name.replace(/\.csv$/, "")); // remove .csv extension
 
     Papa.parse(file, {
       header: true,
@@ -57,8 +61,11 @@ export default function DeleteLeads() {
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
+
+    const filename = originalFileName ? `${originalFileName}_cleaned.csv` : "cleaned_data.csv";
     link.setAttribute("href", url);
-    link.setAttribute("download", "cleaned_data.csv");
+    link.setAttribute("download", filename);
+
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
