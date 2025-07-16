@@ -92,7 +92,7 @@ export default function DeleteLeads() {
         value={emailList}
         onChange={(e) => setEmailList(e.target.value)}
         rows={10}
-        className="w-full mb-4 rounded bg-black-500  p-[2rem] ring-2 ring-gray-500"
+        className="w-full mb-4 rounded bg-black outline-none p-[2rem]"
       />
 
       <div className="flex gap-4 items-center">
