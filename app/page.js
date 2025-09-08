@@ -1,6 +1,4 @@
 "use client"
-import Image from "next/image";
-import DeleteLeads from "./DeleteLeads/page";
 import Link from "next/link";
 import Footer from "./footer"
 import Header from "./header"
@@ -12,14 +10,19 @@ export default function Home() {
       <Header />
       
       <main className="flex flex-col gap-[32px] row-start-2 w-md">
- <Link href="/Latest" className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto">
+ <Link href="/DeleteLeads" className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto">
           
           Start Cleaning
+        </Link>
+        <Link href="/CreateInboxes" className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto">
+          
+          Create Inboxes
         </Link>
         <Link href="/RemoveDuplicates" className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto">
           
           Remove Duplicate Email
         </Link>
+
       </main>
 
       <Footer />
