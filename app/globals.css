@@ -14,7 +14,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #fff;
     --foreground: #ededed;
   }
 }
@@ -22,7 +22,6 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }
 
 /* Works on Firefox */
@@ -36,6 +35,10 @@ body {
   width: 12px;
 }
 
+.nav--color {
+  color: #21b0a3;
+}
+
 *::-webkit-scrollbar-track {
   background: orange;
 }
@@ -44,4 +47,64 @@ body {
   background-color: blue;
   border-radius: 20px;
   border: 3px solid orange;
+}
+
+.light--blue--bg {
+  background-color: #f2fcf9;
+  transition: all 0.3s ease-in-out;
+}
+
+.light--blue--bg:active {
+  background-color: #f2fcf9;
+  transition: all 0.3s ease-in-out;
+}
+
+.nav-link {
+  font-size: 16px;
+  color: #060318;
+  background-color: #ffffff;
+  padding: 1rem 1.2rem 1rem 1.2rem;
+}
+
+.nav-link:hover {
+  background-color: #faf9fb;
+}
+
+.active {
+  font-weight: 400;
+  color: #fff;
+  background-color: #3a3546;
+  padding: 1rem 1.2rem 1rem 1.2rem;
+}
+
+.border-color {
+  border-color: #faf9fb !important;
+}
+
+.bg-gray-slight {
+  background-color: #faf9fb;
+}
+
+/* AUTOMATION */
+.nav-btn {
+  font-size: 14px;
+  color: #060318;
+  background-color: #faf9fb;
+  padding: 0.6rem 1.2rem 0.6rem 1.2rem;
+  display: flex;
+  justify-items: center;
+}
+
+.nav-btn-active {
+  font-size: 14px;
+  color: #ffffff;
+  background-color: #3a3546;
+  padding: 0.6rem 1.2rem 0.6rem 1.2rem;
+  display: flex;
+  justify-items: center;
+}
+
+/* SIDEBAR */
+.sidebar {
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
 }
