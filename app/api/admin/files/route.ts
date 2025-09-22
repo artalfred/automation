@@ -1,20 +1,17 @@
+// app/api/admin/files/route.ts
 import { NextResponse } from "next/server";
-import path from "path";
-import { promises as fs } from "fs";
-import filesJson from "../../../../public/data/files.json";
-import categoriesJson from "../../../../public/data/categories.json";
+import { sbAdmin } from "../../../lib/supabase"; // or "../../../lib/supabase" if you don't use "@/"
 
-const FILES_PATH = path.join(process.cwd(), "public", "data", "files.json");
-const PUBLIC_CSV_DIR = path.join(process.cwd(), "public", "csv");
+export const runtime = "nodejs";
 
-type FileItem = {
+type ShapedFile = {
   id: string;
   title: string;
-  path: string;
+  path: string; // for your management list (uses public_url)
   categories: string[];
 };
 
-const slugify = (s: string) =>
+const slug = (s: string) =>
   s
     .toLowerCase()
     .trim()
@@ -22,88 +19,132 @@ const slugify = (s: string) =>
     .replace(/(^-|-$)/g, "");
 
 export async function GET() {
-  return NextResponse.json(filesJson);
+  // list files for the management page
+  const { data, error } = await sbAdmin
+    .from("files")
+    .select(
+      `
+      id, title, public_url, created_at,
+      file_categories ( categories ( name ) )
+    `
+    )
+    .order("created_at", { ascending: false });
+
+  if (error)
+    return NextResponse.json({ error: error.message }, { status: 500 });
+
+  const shaped: ShapedFile[] = (data || []).map((f: any) => ({
+    id: f.id,
+    title: f.title,
+    path: f.public_url, // your page expects "path" currently
+    categories: (f.file_categories || [])
+      .map((fc: any) => fc?.categories?.name)
+      .filter(Boolean),
+  }));
+
+  return NextResponse.json(shaped);
 }
 
 export async function POST(req: Request) {
   try {
     const form = await req.formData();
     const title = String(form.get("title") || "").trim();
-    const catsRaw = String(form.get("categories") || "[]");
-    const cats = JSON.parse(catsRaw) as string[];
+    const cats = JSON.parse(String(form.get("categories") || "[]")) as string[];
     const file = form.get("file") as File | null;
-    if (!title || !file)
+
+    if (!title || !file) {
       return NextResponse.json(
         { error: "Missing title or file" },
         { status: 400 }
       );
+    }
 
-    // validate categories exist
-    const known = new Set(
-      (categoriesJson as string[]).map((c) => c.toLowerCase())
-    );
-    for (const c of cats) {
-      if (!known.has(String(c).toLowerCase())) {
-        return NextResponse.json(
-          { error: `Unknown category: ${c}` },
-          { status: 400 }
-        );
+    // 1) Upload CSV to Supabase Storage
+    const stamp = Date.now();
+    const base = slug(title);
+    const ext = (file.name.split(".").pop() || "csv").toLowerCase();
+    const storagePath = `csv/${base}-${stamp}.${ext}`;
+
+    const { error: upErr } = await sbAdmin.storage
+      .from(process.env.SUPABASE_BUCKET!)
+      .upload(storagePath, await file.arrayBuffer(), {
+        contentType: "text/csv",
+        upsert: false,
+      });
+
+    if (upErr) {
+      return NextResponse.json(
+        { error: `Storage: ${upErr.message}` },
+        { status: 500 }
+      );
+    }
+
+    const { data: pub } = sbAdmin.storage
+      .from(process.env.SUPABASE_BUCKET!)
+      .getPublicUrl(storagePath);
+
+    const public_url = pub?.publicUrl || "";
+
+    // 2) Ensure categories exist (auto-create if missing)
+    const catIds: string[] = [];
+    for (const raw of cats) {
+      const name = String(raw).trim();
+      if (!name) continue;
+
+      const { data: found, error: findErr } = await sbAdmin
+        .from("categories")
+        .select("id, name")
+        .ilike("name", name)
+        .maybeSingle();
+
+      if (findErr)
+        return NextResponse.json({ error: findErr.message }, { status: 500 });
+
+      if (found?.id) {
+        catIds.push(found.id);
+      } else {
+        const { data: inserted, error: insErr } = await sbAdmin
+          .from("categories")
+          .insert({ name })
+          .select("id")
+          .single();
+        if (insErr)
+          return NextResponse.json({ error: insErr.message }, { status: 500 });
+        catIds.push(inserted!.id);
       }
     }
 
-    await fs.mkdir(PUBLIC_CSV_DIR, { recursive: true });
-    const ext = path.extname(file.name) || ".csv";
-    const base = slugify(title);
-    const stamp = Date.now();
-    const filename = `${base}-${stamp}${ext}`;
-    const abs = path.join(PUBLIC_CSV_DIR, filename);
-    const data = Buffer.from(await file.arrayBuffer());
-    await fs.writeFile(abs, data);
+    // 3) Insert file row
+    const { data: frow, error: finsertErr } = await sbAdmin
+      .from("files")
+      .insert({ title, storage_path: storagePath, public_url })
+      .select("id")
+      .single();
 
-    const id = `${base}-${stamp}`;
-    const newItem: FileItem = {
-      id,
-      title,
-      path: `/csv/${filename}`,
-      categories: cats,
-    };
+    if (finsertErr)
+      return NextResponse.json({ error: finsertErr.message }, { status: 500 });
 
-    const current = filesJson as FileItem[];
-    const updated = [...current, newItem];
-    await fs.writeFile(FILES_PATH, JSON.stringify(updated, null, 2), "utf8");
+    // 4) Join rows
+    if (catIds.length) {
+      const rows = catIds.map((cid) => ({
+        file_id: frow.id,
+        category_id: cid,
+      }));
+      const { error: joinErr } = await sbAdmin
+        .from("file_categories")
+        .insert(rows);
+      if (joinErr)
+        return NextResponse.json({ error: joinErr.message }, { status: 500 });
+    }
 
-    return NextResponse.json(newItem, { status: 201 });
+    return NextResponse.json(
+      { ok: true, id: frow.id, url: public_url },
+      { status: 201 }
+    );
   } catch (e: any) {
     return NextResponse.json(
       { error: e?.message || "Upload failed" },
       { status: 500 }
     );
   }
-}
-
-export async function DELETE(req: Request) {
-  const { searchParams } = new URL(req.url);
-  const id = searchParams.get("id");
-  if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
-
-  const current = filesJson as FileItem[];
-  const file = current.find((f) => f.id === id);
-  if (!file) return NextResponse.json({ error: "Not found" }, { status: 404 });
-
-  // remove the CSV on disk
-  try {
-    const abs = path.join(
-      process.cwd(),
-      "public",
-      file.path.replace(/^\//, "")
-    );
-    await fs.unlink(abs);
-  } catch {
-    // ignore if already gone
-  }
-
-  const next = current.filter((f) => f.id !== id);
-  await fs.writeFile(FILES_PATH, JSON.stringify(next, null, 2), "utf8");
-
-  return NextResponse.json({ ok: true });
 }

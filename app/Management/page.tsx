@@ -112,13 +112,9 @@ export default function ManagementPage() {
 
   const deleteFile = async (id: string) => {
     if (!confirm("Delete this file entry and its CSV?")) return;
-    const res = await fetch(`/api/admin/files?id=${encodeURIComponent(id)}`, {
-      method: "DELETE",
-    });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      return alert(`Delete failed: ${err.error || res.statusText}`);
-    }
+    const res = await fetch(`/api/admin/files/${id}`, { method: "DELETE" }); // <-- path fix
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok) return alert(`Delete failed: ${body.error || res.statusText}`);
     await refresh();
   };
 

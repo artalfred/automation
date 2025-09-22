@@ -7,18 +7,18 @@ import MultiSelectChips from "../Components/MultiSelectChips";
 type FileItem = {
   id: string;
   title: string;
-  path: string;
+  url: string; // Supabase public_url
   categories: string[];
 };
 
 export default function Page() {
   const [categories, setCategories] = useState<string[]>([]);
 
-  // fetch categories from public/data/categories.json
+  // Fetch categories from Supabase API route
   useEffect(() => {
-    fetch("/data/categories.json")
+    fetch("/api/admin/categories")
       .then((res) => res.json())
-      .then(setCategories)
+      .then((data) => setCategories(data || []))
       .catch((err) => console.error("Failed to load categories", err));
   }, []);
 
@@ -45,15 +45,35 @@ function ClientFilter({ options }: { options: string[] }) {
   const [results, setResults] = useState<FileItem[]>([]);
   const query = selected.join(",");
 
+  // useEffect(() => {
+  //   const url = query
+  //     ? `/api/files?categories=${encodeURIComponent(query)}`
+  //     : "/api/files";
+
+  //   fetch(url)
+  //     .then((res) => res.json())
+  //     .then((data) => setResults(data || []))
+  //     .catch((err) => console.error("Failed to load files", err));
+  // }, [query]);
+
   useEffect(() => {
     const url = query
       ? `/api/files?categories=${encodeURIComponent(query)}`
       : "/api/files";
 
     fetch(url)
-      .then((res) => res.json())
-      .then(setResults)
-      .catch((err) => console.error("Failed to load files", err));
+      .then(async (res) => {
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}));
+          throw new Error(body?.error || res.statusText);
+        }
+        return res.json();
+      })
+      .then((data) => setResults(data || []))
+      .catch((err) => {
+        console.error("Failed to load files:", err);
+        setResults([]); // reset to empty if error
+      });
   }, [query]);
 
   return (
@@ -86,9 +106,9 @@ function ClientFilter({ options }: { options: string[] }) {
                 </div>
               </div>
 
-              {f.path ? (
+              {f.url ? (
                 <a
-                  href={f.path}
+                  href={f.url}
                   download
                   className="inline-flex items-center gap-2 px-3 py-2 rounded bg-teal-600 text-white text-sm active"
                   aria-label={`Download ${f.title}`}

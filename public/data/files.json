@@ -1,26 +1,10 @@
 [
   {
-    "id": "us-cities-01",
-    "title": "Birmingham Businesses",
-    "path": "csv/Technology.csv",
+    "id": "alabama-leads-1758578745541",
+    "title": "Alabama Leads",
+    "path": "/csv/alabama-leads-1758578745541.csv",
     "categories": [
       "Alabama"
-    ]
-  },
-  {
-    "id": "phoenix",
-    "title": "Phoenix List",
-    "path": "csv/Medical.csv",
-    "categories": [
-      "Arizona"
-    ]
-  },
-  {
-    "id": "developer-leads-1758565458216",
-    "title": "Developer Leads",
-    "path": "/csv/developer-leads-1758565458216.csv",
-    "categories": [
-      "Arkansas"
     ]
   }
 ]
