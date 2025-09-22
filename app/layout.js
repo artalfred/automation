@@ -1,14 +1,12 @@
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import { Geist, Geist_Mono, Parkinsans } from "next/font/google";
 
-import { Parkinsans } from "next/font/google";
 import "./globals.css";
 import Sidebar from "./sidebar";
 
 // Configure the font with subsets and weights
 const parkinsans = Parkinsans({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
+  weight: ["300 800"],
   display: "swap",
 });
 
@@ -30,7 +28,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className="h-full">
-      <body className={`${geistMono.className} antialiased`}>
+      <body className={`${parkinsans.className} antialiased`}>
         <div className="flex h-screen">
           <aside className="sticky top-0 left-0 px-6 py-8 w-[20%] broder-r-2 bg-white sidebar rounded-r-[16px]">
             <Sidebar />
