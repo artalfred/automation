@@ -1,4 +1,3 @@
-// app/api/admin/files/[id]/route.ts  (edge: server-only)
 import { NextResponse } from "next/server";
 import { sbAdmin } from "../../../../lib/supabase";
 
