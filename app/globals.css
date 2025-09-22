@@ -85,6 +85,18 @@ body {
   background-color: #faf9fb;
 }
 
+.main--color {
+  color: #3a3546;
+}
+
+select {
+  appearance: none; /* removes arrow in most browsers */
+  -webkit-appearance: none; /* Safari/Chrome */
+  -moz-appearance: none; /* Firefox */
+  background: none; /* remove background arrow */
+  padding: 0.7rem 10rem 0.7rem 1.3rem;
+}
+
 /* AUTOMATION */
 .nav-btn {
   font-size: 14px;
@@ -104,7 +116,33 @@ body {
   justify-items: center;
 }
 
+/* MANAGEMENT */
+.management-btn {
+  font-size: 14px;
+  color: #060318;
+  background-color: #faf9fb;
+  padding: 0.6rem 1.2rem 0.6rem 1.2rem;
+  display: flex;
+  justify-items: center;
+}
+
+.management-btn-active {
+  font-size: 14px;
+  color: #ffffff;
+  background-color: #3a3546;
+  padding: 1rem 1.2rem 1rem 1.2rem;
+  display: flex;
+  justify-items: center;
+}
 /* SIDEBAR */
 .sidebar {
   box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
+}
+
+/* CITY NICHES */
+.city-btn {
+  font-weight: 400;
+  color: #fff;
+  background-color: #3a3546;
+  padding: 0.5rem 2rem 0.5rem 2rem;
 }

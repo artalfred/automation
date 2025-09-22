@@ -1,0 +1,27 @@
+[
+  {
+    "id": "us-cities-01",
+    "title": "Birmingham Businesses",
+    "path": "csv/Technology.csv",
+    "categories": [
+      "Alabama"
+    ]
+  },
+  {
+    "id": "multi-al-az-01",
+    "title": "AL + AZ Leads",
+    "path": "csv/Restaurant.csv",
+    "categories": [
+      "Alabama",
+      "Arizona"
+    ]
+  },
+  {
+    "id": "phoenix",
+    "title": "Phoenix List",
+    "path": "csv/Restaurant.csv",
+    "categories": [
+      "Arizona"
+    ]
+  }
+]
