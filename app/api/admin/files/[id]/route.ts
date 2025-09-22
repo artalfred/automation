@@ -1,14 +1,15 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { sbAdmin } from "../../../../lib/supabase";
+
 export const runtime = "nodejs";
 
 export async function DELETE(
-  _req: Request,
-  context: { params: { id: string } }
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const id = context.params.id;
+  const { id } = await params;
 
-  // Get storage path for cleanup
+  // 1) Get storage path
   const { data, error } = await sbAdmin
     .from("files")
     .select("storage_path")
@@ -19,14 +20,14 @@ export async function DELETE(
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  // Try removing from storage
+  // 2) Remove from storage (best effort)
   try {
     await sbAdmin.storage
       .from(process.env.SUPABASE_BUCKET!)
       .remove([data.storage_path]);
   } catch {}
 
-  // Delete DB row
+  // 3) Delete database row
   const { error: delErr } = await sbAdmin.from("files").delete().eq("id", id);
   if (delErr) {
     return NextResponse.json({ error: delErr.message }, { status: 400 });
