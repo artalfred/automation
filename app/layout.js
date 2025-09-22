@@ -30,7 +30,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className="h-full">
-      <body className={`${parkinsans.className} antialiased`}>
+      <body className={`${geistMono.className} antialiased`}>
         <div className="flex h-screen">
           <aside className="sticky top-0 left-0 px-6 py-8 w-[20%] broder-r-2 bg-white sidebar rounded-r-[16px]">
             <Sidebar />
