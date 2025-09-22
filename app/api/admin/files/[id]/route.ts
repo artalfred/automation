@@ -1,11 +1,13 @@
+// app/api/admin/files/[id]/route.ts
 import { NextResponse } from "next/server";
 import { sbAdmin } from "../../../../lib/supabase";
 
 export const runtime = "nodejs";
 
-type Ctx = { params: { id: string } };
-
-export async function DELETE(_req: Request, { params }: Ctx) {
+export async function DELETE(
+  _req: Request,
+  { params }: { params: { id: string } }
+) {
   const { id } = params;
 
   // Get storage path so we can remove the blob too
