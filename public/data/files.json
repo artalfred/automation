@@ -8,20 +8,19 @@
     ]
   },
   {
-    "id": "multi-al-az-01",
-    "title": "AL + AZ Leads",
-    "path": "csv/Restaurant.csv",
+    "id": "phoenix",
+    "title": "Phoenix List",
+    "path": "csv/Medical.csv",
     "categories": [
-      "Alabama",
       "Arizona"
     ]
   },
   {
-    "id": "phoenix",
-    "title": "Phoenix List",
-    "path": "csv/Restaurant.csv",
+    "id": "developer-leads-1758565458216",
+    "title": "Developer Leads",
+    "path": "/csv/developer-leads-1758565458216.csv",
     "categories": [
-      "Arizona"
+      "Arkansas"
     ]
   }
 ]
