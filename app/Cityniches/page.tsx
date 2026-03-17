@@ -45,17 +45,6 @@ function ClientFilter({ options }: { options: string[] }) {
   const [results, setResults] = useState<FileItem[]>([]);
   const query = selected.join(",");
 
-  // useEffect(() => {
-  //   const url = query
-  //     ? `/api/files?categories=${encodeURIComponent(query)}`
-  //     : "/api/files";
-
-  //   fetch(url)
-  //     .then((res) => res.json())
-  //     .then((data) => setResults(data || []))
-  //     .catch((err) => console.error("Failed to load files", err));
-  // }, [query]);
-
   useEffect(() => {
     const url = query
       ? `/api/files?categories=${encodeURIComponent(query)}`
