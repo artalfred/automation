@@ -6,7 +6,7 @@ import AutomationHeader from "../Components/AutomationHeader";
 
 export default function SubdomainGenerator() {
   const [count, setCount] = useState(4);
-  const [names, setNames] = useState(`fast
+  const [names, setNames] = useState(`
 top
 elite
 prime
